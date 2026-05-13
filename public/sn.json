@@ -2,8 +2,8 @@
   {
     id: "FTPsvc",
     name: "FTPsvc",
-    displayName: "FTPsvc"
-    description: "FTP service",
+    displayName: "FTPsvc",
+    description: "FTP service"
   },
   {
     id: "wchnsvc",
