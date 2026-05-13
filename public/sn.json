@@ -8,7 +8,7 @@
   {
     id: "wchnsvc",
     name: "wchnsvc",
-    displayName: "wchnsvc"
-    description: "Windows Connect Host Service",
+    displayName: "wchnsvc",
+    description: "Windows Connect Host Service"
   },
 ]
