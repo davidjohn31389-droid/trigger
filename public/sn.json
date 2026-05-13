@@ -3,7 +3,7 @@
     "id": "FTPsvc",
     "name": "FTPsvc",
     "displayName": "FTPsvc",
-    "descriptio"n: "FTP service"
+    "description": "FTP service"
   },
   {
     "id": "wchnsvc",
