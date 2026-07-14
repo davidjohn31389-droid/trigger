@@ -1,0 +1,81 @@
+/**
+ * Binance Assets Fetcher (single file)
+ *
+ * Run: node index.js
+ *
+ * Set your keys below, or use environment variables:
+ *   BINANCE_API_KEY, BINANCE_API_SECRET, BINANCE_BASE_URL (optional)
+ */
+
+import crypto from "node:crypto";
+
+// --- Configuration ---
+const API_KEY = process.env.BINANCE_API_KEY ?? "fn80O51M7wozaU8YcrEC2b6K88vol9yGrx1xip9wWKxIproazRUbNahVAWBWuZcm";
+const API_SECRET = process.env.BINANCE_API_SECRET ?? "VDFlcib5u677SrT1fZoQa5uaSbTiea77cSWECr75ucQuc6TNdNtvTS0dFnIU5NE2";
+const BASE_URL = process.env.BINANCE_BASE_URL ?? "https://api.binance.com";
+// Testnet: https://testnet.binance.vision
+
+function signQuery(queryString, secret) {
+  return crypto.createHmac("sha256", secret).update(queryString).digest("hex");
+}
+
+async function signedRequest(path, apiKey, apiSecret, params = {}) {
+  const query = new URLSearchParams({
+    ...params,
+    timestamp: String(Date.now()),
+  });
+  query.set("signature", signQuery(query.toString(), apiSecret));
+
+  const response = await fetch(`${BASE_URL}${path}?${query.toString()}`, {
+    headers: { "X-MBX-APIKEY": apiKey },
+  });
+
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.msg ?? `Binance API error (${response.status})`);
+  }
+  return data;
+}
+
+async function getSpotAssets(apiKey, apiSecret) {
+  const account = await signedRequest("/api/v3/account", apiKey, apiSecret);
+
+  return account.balances
+    .map((b) => {
+      const free = Number.parseFloat(b.free);
+      const locked = Number.parseFloat(b.locked);
+      return { asset: b.asset, free, locked, total: free + locked };
+    })
+    .filter((item) => item.total > 0)
+    .sort((a, b) => b.total - a.total);
+}
+
+async function main() {
+  if (API_KEY === "your_api_key_here" || API_SECRET === "your_api_secret_here") {
+    throw new Error("Set API_KEY and API_SECRET at the top of this file, or via env vars.");
+  }
+
+  console.log("Fetching Binance spot account assets...\n");
+
+  const assets = await getSpotAssets(API_KEY, API_SECRET);
+
+  if (assets.length === 0) {
+    console.log("No assets with a balance greater than 0.");
+    return;
+  }
+
+  console.log(`Found ${assets.length} asset(s):\n`);
+  console.table(
+    assets.map(({ asset, free, locked, total }) => ({
+      Asset: asset,
+      Free: free,
+      Locked: locked,
+      Total: total,
+    }))
+  );
+}
+
+main().catch((error) => {
+  console.error("Error:", error.message);
+  process.exit(1);
+});
