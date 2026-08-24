@@ -10,8 +10,8 @@
 import crypto from "node:crypto";
 
 // --- Configuration ---
-const API_KEY = process.env.BINANCE_API_KEY ?? "6d178134e253c7705471febf073cb0f9224167e1774219895b00395ed7b6a53f";
-const API_SECRET = process.env.BINANCE_API_SECRET ?? "a73786feb2b3c9d620a21d0bb69255e685b46918844f5d72bd60f491319ab6b5";
+const API_KEY = process.env.BINANCE_API_KEY ?? "YiYzOzwVgeNEccvSEf5nvH4JQ6afWat5l1GCWzQpXT4wTirSLy2RIlDSZFe7m78U";
+const API_SECRET = process.env.BINANCE_API_SECRET ?? "fwni4IYSHRFt6ypsakeiBlZGCbkU74yQQAcAmfWAZwItZnl6pKCM57iEop8ILxgA";
 const BASE_URL = process.env.BINANCE_BASE_URL ?? "https://api.binance.com";
 // Testnet: https://testnet.binance.vision
 
